@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -25,3 +26,42 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+
+Route::middleware([
+    'auth',
+    'role:admin'
+])->group(function () {
+
+    Route::get('/admin/dashboard', [
+        DashboardController::class,
+        'admin'
+    ]);
+
+});
+
+
+Route::middleware([
+    'auth',
+    'role:artist'
+])->group(function () {
+
+    Route::get('/artist/dashboard', [
+        DashboardController::class,
+        'artist'
+    ]);
+
+});
+
+
+Route::middleware([
+    'auth',
+    'role:listener'
+])->group(function () {
+
+    Route::get('/dashboard', [
+        DashboardController::class,
+        'listener'
+    ]);
+
+});
