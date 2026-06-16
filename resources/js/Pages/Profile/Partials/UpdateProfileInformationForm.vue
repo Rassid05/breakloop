@@ -4,6 +4,7 @@ import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { User, CheckCircle2, AlertCircle } from 'lucide-vue-next'; // Import ikon pendukung
 
 defineProps({
     mustVerifyEmail: {
@@ -23,87 +24,101 @@ const form = useForm({
 </script>
 
 <template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium text-gray-900">
-                Profile Information
+    <section class="space-y-6">
+        <header class="space-y-1">
+            <h2 class="text-base font-bold text-white flex items-center gap-2">
+                <User :size="16" class="text-emerald-400" /> Informasi Akun
             </h2>
 
-            <p class="mt-1 text-sm text-gray-600">
-                Update your account's profile information and email address.
+            <p class="text-xs text-gray-400 leading-relaxed max-w-xl">
+                Perbarui nama profil publik dan alamat email korespondensi akun utama Anda.
             </p>
         </header>
 
         <form
             @submit.prevent="form.patch(route('profile.update'))"
-            class="mt-6 space-y-6"
+            class="mt-6 space-y-5 max-w-xl"
         >
-            <div>
-                <InputLabel for="name" value="Name" />
-
-                <TextInput
+            <div class="space-y-1.5">
+                <label for="name" class="text-xs font-bold text-gray-400 tracking-wide">
+                    Nama Lengkap
+                </label>
+                <input
                     id="name"
                     type="text"
-                    class="mt-1 block w-full"
                     v-model="form.name"
                     required
                     autofocus
                     autocomplete="name"
+                    placeholder="Masukkan nama profil Anda"
+                    class="w-full bg-[#0b0c0e] border border-gray-800/80 rounded-xl px-4 py-3 text-xs md:text-sm text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 transition-all"
                 />
-
-                <InputError class="mt-2" :message="form.errors.name" />
+                <InputError class="mt-1 text-xs text-rose-400" :message="form.errors.name" />
             </div>
 
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
+            <div class="space-y-1.5">
+                <label for="email" class="text-xs font-bold text-gray-400 tracking-wide">
+                    Alamat Email
+                </label>
+                <input
                     id="email"
                     type="email"
-                    class="mt-1 block w-full"
                     v-model="form.email"
                     required
                     autocomplete="username"
+                    placeholder="nama@email.com"
+                    class="w-full bg-[#0b0c0e] border border-gray-800/80 rounded-xl px-4 py-3 text-xs md:text-sm text-white placeholder-gray-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 transition-all"
                 />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError class="mt-1 text-xs text-rose-400" :message="form.errors.email" />
             </div>
 
-            <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                <p class="mt-2 text-sm text-gray-800">
-                    Your email address is unverified.
-                    <Link
-                        :href="route('verification.send')"
-                        method="post"
-                        as="button"
-                        class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        Click here to re-send the verification email.
-                    </Link>
-                </p>
+            <div v-if="mustVerifyEmail && user.email_verified_at === null" class="bg-amber-500/5 border border-amber-500/10 p-4 rounded-xl space-y-2">
+                <div class="flex items-start gap-2.5">
+                    <AlertCircle :size="16" class="text-amber-500 mt-0.5 flex-shrink-0" />
+                    <div>
+                        <p class="text-xs font-semibold text-amber-400">
+                            Alamat email Anda belum terverifikasi.
+                        </p>
+                        <Link
+                            :href="route('verification.send')"
+                            method="post"
+                            as="button"
+                            class="text-[11px] text-gray-400 underline hover:text-white transition-colors focus:outline-none mt-1"
+                        >
+                            Klik di sini untuk mengirim ulang email verifikasi.
+                        </Link>
+                    </div>
+                </div>
 
                 <div
                     v-show="status === 'verification-link-sent'"
-                    class="mt-2 text-sm font-medium text-green-600"
+                    class="text-[11px] font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-2 rounded-lg flex items-center gap-1.5 mt-2"
                 >
-                    A new verification link has been sent to your email address.
+                    <CheckCircle2 :size="12" /> Link verifikasi baru telah dikirim ke alamat email Anda.
                 </div>
             </div>
 
-            <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
+            <div class="flex items-center gap-4 pt-2">
+                <button 
+                    type="submit"
+                    :disabled="form.processing"
+                    class="bg-white hover:bg-emerald-400 text-black font-bold text-xs px-5 py-2.5 rounded-xl transition-all duration-300 disabled:opacity-40 shadow-lg shadow-white/5 focus:outline-none"
+                >
+                    Simpan Perubahan
+                </button>
 
                 <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
+                    enter-active-class="transition duration-300 ease-out"
+                    enter-from-class="opacity-0 translate-x-2"
+                    leave-active-class="transition duration-200 ease-in"
                     leave-to-class="opacity-0"
                 >
                     <p
                         v-if="form.recentlySuccessful"
-                        class="text-sm text-gray-600"
+                        class="text-xs font-semibold text-emerald-400 flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl"
                     >
-                        Saved.
+                        <CheckCircle2 :size="13" />
+                        <span>Perubahan disimpan.</span>
                     </p>
                 </Transition>
             </div>
