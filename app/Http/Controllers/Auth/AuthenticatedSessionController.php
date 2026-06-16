@@ -42,9 +42,7 @@ class AuthenticatedSessionController extends Controller
             return redirect('/artist/dashboard');
         }
 
-        return redirect('/dashboard');
-
-        return redirect('/dashboard');
+        return redirect('/discover');
     }
 
     /**

@@ -65,3 +65,40 @@ Route::middleware([
     ]);
 
 });
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/discover', function () {
+
+        return Inertia::render(
+            'Listener/Discover'
+        );
+
+    });
+
+});
+
+Route::middleware(['auth'])->group(function () {
+
+    Route::get('/samples', function () {
+        return Inertia::render('Samples/Index');
+    })->name('samples.index');
+
+});
+
+
+
+// Rute Home / Dashboard
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->name('dashboard');
+
+// Rute Search yang sudah kamu buat berfungsi
+Route::get('/search', function () {
+    return Inertia::render('Search');
+})->name('search');
+
+// Rute Explore (Tinggal buat begini nanti)
+Route::get('/explore', function () {
+    return Inertia::render('Explore');
+})->name('explore');
